@@ -1,6 +1,6 @@
 namespace ProductApi.Models;
 
-public class DatabaseSettings
+public class ProductDatabaseSettings
 {
     public string ConnectionString { get; set; } = null!;
 
