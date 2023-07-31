@@ -1,6 +1,10 @@
+using ProductApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure database settings
+builder.Services.Configure<DatabaseSettings>(
+    builder.Configuration.GetSection("ProductDatabase"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
