@@ -4,11 +4,20 @@ using ProductApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy => {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyMethod();
+        policy.AllowAnyHeader();
+    });
+});
+
 // Configure database settings
 builder.Services.Configure<ProductDatabaseSettings>(
     builder.Configuration.GetSection("ProductDatabase"));
 
-builder.Services.AddSingleton<ProductDbContext>();
+// builder.Services.AddSingleton<ProductDbContext>();
 builder.Services.AddSingleton<ProductsService>();
 
 builder.Services.AddControllers();
@@ -26,9 +35,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
