@@ -19,6 +19,8 @@ public class ProductsService
 
         _productsCollection = mongoDatabase.GetCollection<Product>(
             databaseSettings.Value.ProductsCollectionName);
+
+        
     }
 
     /// <summary>

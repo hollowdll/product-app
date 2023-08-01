@@ -6,7 +6,7 @@ namespace ProductApi.Helpers;
 public static class DtoExtensions
 {
     /// <summary>
-    /// Converts Product class to ProductDto class.
+    /// Converts <see cref="Product" /> class to <see cref="ProductDto" /> class.
     /// </summary>
     public static ProductDto ToDto(this Product product)
     {
