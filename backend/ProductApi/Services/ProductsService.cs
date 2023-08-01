@@ -10,15 +10,9 @@ public class ProductsService
     private readonly IMongoCollection<Product> _productsCollection;
 
     public ProductsService(
-        IOptions<ProductDatabaseSettings> databaseSettings)
+        IOptions<ProductDatabaseSettings> databaseSettings, ProductDbContext context)
     {
-        var client = new MongoClient(
-            databaseSettings.Value.ConnectionString);
-
-        var database = client.GetDatabase(
-            databaseSettings.Value.DatabaseName);
-
-        _productsCollection = database.GetCollection<Product>(
+        _productsCollection = context.Database.GetCollection<Product>(
             databaseSettings.Value.ProductsCollectionName);
     }
 
