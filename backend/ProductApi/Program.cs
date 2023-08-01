@@ -1,5 +1,6 @@
 using ProductApi.Models;
 using ProductApi.Services;
+using ProductApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<ProductDatabaseSettings>(
     builder.Configuration.GetSection("ProductDatabase"));
 
+builder.Services.AddSingleton<ProductDbContext>();
 builder.Services.AddSingleton<ProductsService>();
 
 builder.Services.AddControllers();

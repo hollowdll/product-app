@@ -1,6 +1,7 @@
 using ProductApi.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using ProductApi.Data;
 
 namespace ProductApi.Services;
 
@@ -9,18 +10,10 @@ public class ProductsService
     private readonly IMongoCollection<Product> _productsCollection;
 
     public ProductsService(
-        IOptions<ProductDatabaseSettings> databaseSettings)
+        IOptions<ProductDatabaseSettings> databaseSettings, ProductDbContext context)
     {
-        var mongoClient = new MongoClient(
-            databaseSettings.Value.ConnectionString);
-
-        var mongoDatabase = mongoClient.GetDatabase(
-            databaseSettings.Value.DatabaseName);
-
-        _productsCollection = mongoDatabase.GetCollection<Product>(
+        _productsCollection = context.Database.GetCollection<Product>(
             databaseSettings.Value.ProductsCollectionName);
-
-        
     }
 
     /// <summary>
