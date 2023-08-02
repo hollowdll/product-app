@@ -35,9 +35,9 @@ public class ProductsService
         await _productsCollection.InsertOneAsync(newProduct);
 
     /// <summary>
-    /// Updates a document in products collection by replacing it.
+    /// Edits a document in products collection by replacing it.
     /// </summary>
-    public async Task UpdateProductAsync(string id, Product updatedProduct) =>
+    public async Task EditProductAsync(string id, Product updatedProduct) =>
         await _productsCollection.ReplaceOneAsync(i => i.Id == id, updatedProduct);
 
     /// <summary>

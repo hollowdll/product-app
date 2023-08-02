@@ -19,6 +19,7 @@ public class ProductsController : ControllerBase
         _productsService = productsService;
     }
 
+    // Gets all products
     [HttpGet]
     public async Task<List<ProductDto>> GetProducts()
     {
@@ -30,6 +31,7 @@ public class ProductsController : ControllerBase
             .ToList();
     }
 
+    // Gets a product by id
     [HttpGet("{id:length(24)}")]
     public async Task<ActionResult<ProductDto>> GetProductById(string id)
     {
@@ -43,6 +45,7 @@ public class ProductsController : ControllerBase
         return product.ToDto();
     }
 
+    // Adds a new product
     [HttpPost]
     public async Task<ActionResult> AddProduct(ProductDto productDto)
     {
@@ -51,5 +54,42 @@ public class ProductsController : ControllerBase
         _logger.LogInformation("Added new product to the database");
 
         return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id }, newProduct);
+    }
+
+    // Edits a product
+    [HttpPut("{id:length(24)}")]
+    public async Task<ActionResult> EditProduct(string id, ProductDto productDto)
+    {
+        var product = await _productsService.GetProductByIdAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        product.Name = productDto.Name;
+        product.Manufacturer = productDto.Manufacturer;
+        product.Price = productDto.Price;
+        product.Published = productDto.Published;
+
+        await _productsService.EditProductAsync(id, product);
+        _logger.LogInformation($"Edited product with ID {id}");
+
+        return NoContent();
+    }
+
+    // Deletes a product
+    [HttpDelete("{id:length(24)}")]
+    public async Task<ActionResult> DeleteProduct(string id)
+    {
+        var product = await _productsService.GetProductByIdAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        await _productsService.DeleteProductAsync(id);
+        _logger.LogInformation($"Deleted product with ID {id}");
+
+        return NoContent();
     }
 }
