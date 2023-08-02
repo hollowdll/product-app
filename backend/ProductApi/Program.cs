@@ -32,6 +32,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    // development error handler
+    app.UseExceptionHandler("/error-dev");
+}
+else
+{
+    // production error handler
+    app.UseExceptionHandler("/error");
 }
 
 app.UseHttpsRedirection();
