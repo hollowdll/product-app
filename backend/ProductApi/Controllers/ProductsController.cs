@@ -21,10 +21,19 @@ public class ProductsController : ControllerBase
 
     // Gets all products
     [HttpGet]
-    public async Task<List<ProductDto>> GetProducts()
+    public async Task<ActionResult<List<ProductDto>>> GetProducts()
     {
-        var products = await _productsService.GetProductsAsync();
-        _logger.LogInformation($"Fetched all products from the database with count {products.Count()}");
+        List<Product> products = new List<Product>();
+        try
+        {
+            products = await _productsService.GetProductsAsync();
+        }
+        catch(Exception e)
+        {
+            _logger.LogError($"Failed to fetch all products: {e.Message}");
+            return Problem();
+        }
+        _logger.LogInformation($"Fetched all products with count {products.Count()}");
 
         return products
             .Select(i => i.ToDto())
@@ -35,12 +44,27 @@ public class ProductsController : ControllerBase
     [HttpGet("{id:length(24)}")]
     public async Task<ActionResult<ProductDto>> GetProductById(string id)
     {
-        var product = await _productsService.GetProductByIdAsync(id);
+        Product? product = null;
+        try
+        {
+            product = await _productsService.GetProductByIdAsync(id);
+        }
+        catch(FormatException e)
+        {
+            _logger.LogError($"Failed to fetch product with ID '{id}': Failed to parse document ID: {e.Message}");
+            return NotFound();
+        }
+        catch(Exception e)
+        {
+            _logger.LogError($"Failed to fetch product with ID '{id}': {e.Message}");
+            return Problem();
+        }
+
         if (product == null)
         {
             return NotFound();
         }
-        _logger.LogInformation($"Fetched product with ID {product.Id} from the database");
+        _logger.LogInformation($"Fetched product with ID '{product.Id}'");
 
         return product.ToDto();
     }
@@ -50,8 +74,16 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult> AddProduct(ProductDto productDto)
     {
         var newProduct = new Product(productDto);
-        await _productsService.AddProductAsync(newProduct);
-        _logger.LogInformation("Added new product to the database");
+        try
+        {
+            await _productsService.AddProductAsync(newProduct);
+        }
+        catch(Exception e)
+        {
+            _logger.LogError($"Failed to add a new product: {e.Message}");
+            return Problem();
+        }
+        _logger.LogInformation($"Added a new product with ID '{newProduct.Id}'");
 
         return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id }, newProduct);
     }
@@ -60,7 +92,22 @@ public class ProductsController : ControllerBase
     [HttpPut("{id:length(24)}")]
     public async Task<ActionResult> EditProduct(string id, ProductDto productDto)
     {
-        var product = await _productsService.GetProductByIdAsync(id);
+        Product? product = null;
+        try
+        {
+            product = await _productsService.GetProductByIdAsync(id);
+        }
+        catch(FormatException e)
+        {
+            _logger.LogError($"Failed to fetch product with ID '{id}': Failed to parse document ID: {e.Message}");
+            return NotFound();
+        }
+        catch(Exception e)
+        {
+            _logger.LogError($"Failed to fetch product with ID '{id}': {e.Message}");
+            return Problem();
+        }
+
         if (product == null)
         {
             return NotFound();
@@ -71,8 +118,16 @@ public class ProductsController : ControllerBase
         product.Price = productDto.Price;
         product.Published = productDto.Published;
 
-        await _productsService.EditProductAsync(id, product);
-        _logger.LogInformation($"Edited product with ID {id}");
+        try
+        {
+            await _productsService.EditProductAsync(id, product);
+        }
+        catch(Exception e)
+        {
+            _logger.LogError($"Failed to edit product with ID '{id}': {e.Message}");
+            return Problem();
+        }
+        _logger.LogInformation($"Edited product with ID '{id}'");
 
         return NoContent();
     }
@@ -81,14 +136,37 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<ActionResult> DeleteProduct(string id)
     {
-        var product = await _productsService.GetProductByIdAsync(id);
+        Product? product = null;
+        try
+        {
+            product = await _productsService.GetProductByIdAsync(id);
+        }
+        catch(FormatException e)
+        {
+            _logger.LogError($"Failed to fetch product with ID '{id}': Failed to parse document ID: {e.Message}");
+            return NotFound();
+        }
+        catch(Exception e)
+        {
+            _logger.LogError($"Failed to fetch product with ID '{id}': {e.Message}");
+            return Problem();
+        }
+
         if (product == null)
         {
             return NotFound();
         }
 
-        await _productsService.DeleteProductAsync(id);
-        _logger.LogInformation($"Deleted product with ID {id}");
+        try
+        {
+            await _productsService.DeleteProductAsync(id);
+        }
+        catch(Exception e)
+        {
+            _logger.LogError($"Failed to delete product with ID '{id}': {e.Message}");
+            return Problem();
+        }
+        _logger.LogInformation($"Deleted product with ID '{id}'");
 
         return NoContent();
     }
