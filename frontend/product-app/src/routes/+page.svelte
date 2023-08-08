@@ -8,7 +8,7 @@
 </svelte:head>
 
 <section>
-	<h1>Home page</h1>
+	<h1>Welcome to Product app</h1>
 
 	
 </section>
