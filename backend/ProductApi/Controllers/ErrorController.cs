@@ -7,11 +7,8 @@ namespace ProductApi.Controllers;
 [Route("api/v1/[controller]")]
 public class ErrorController : ControllerBase
 {
-    private readonly ILogger<ErrorController> _logger;
-
-    public ErrorController(ILogger<ErrorController> logger)
+    public ErrorController()
     {
-        _logger = logger;
     }
 
     [Route("/error")]
