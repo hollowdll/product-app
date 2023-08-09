@@ -13,7 +13,7 @@ public class AppUserStore : IUserStore<AppUser>
         IOptions<ProductDatabaseSettings> databaseSettings, ProductDbContext context)
     {
         _usersCollection = context.Database.GetCollection<AppUser>(
-            databaseSettings.Value.ProductsCollectionName);
+            databaseSettings.Value.UsersCollectionName);
     }
 
     public async Task<IdentityResult> CreateAsync(AppUser user, CancellationToken cancellationToken)
