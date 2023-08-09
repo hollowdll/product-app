@@ -7,9 +7,11 @@ public class AppUser
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    public string Id { get; set; } = null!;
 
     public string Username { get; set; } = null!;
+
+    public string NormalizedUsername { get; set; } = null!;
 
     public string Password { get; set; } = null!;
 

@@ -7,4 +7,8 @@ public class ProductDatabaseSettings
     public string DatabaseName { get; set; } = null!;
 
     public string ProductsCollectionName { get; set; } = null!;
+
+    public string UsersCollectionName { get; set; } = null!;
+
+    public string RolesCollectionName { get; set; } = null!;
 }
