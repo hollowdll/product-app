@@ -5,7 +5,7 @@ using ProductApi.Data;
 
 namespace ProductApi.Services;
 
-public class ProductsService
+public class ProductsService : IDisposable
 {
     private readonly IMongoCollection<Product> _productsCollection;
 
@@ -45,4 +45,8 @@ public class ProductsService
     /// </summary>
     public async Task DeleteProductAsync(string id) =>
         await _productsCollection.DeleteOneAsync(i => i.Id == id);
+
+    public void Dispose()
+    {
+    }
 }

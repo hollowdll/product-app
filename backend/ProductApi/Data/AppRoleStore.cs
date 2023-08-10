@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace ProductApi.Data;
 
-public class AppRoleStore : IRoleStore<AppRole>
+public class AppRoleStore : IQueryableRoleStore<AppRole>
 {
     private readonly IMongoCollection<AppRole> _rolesCollection;
 
@@ -16,6 +16,8 @@ public class AppRoleStore : IRoleStore<AppRole>
             databaseSettings.Value.RolesCollectionName);
     }
 
+    public IQueryable<AppRole> Roles => _rolesCollection.AsQueryable();
+
     public async Task<IdentityResult> CreateAsync(AppRole role, CancellationToken cancellationToken)
     {
         await _rolesCollection.InsertOneAsync(role, cancellationToken: cancellationToken);
@@ -25,7 +27,7 @@ public class AppRoleStore : IRoleStore<AppRole>
     
     public async Task<IdentityResult> DeleteAsync(AppRole role, CancellationToken cancellationToken)
     {
-        await _rolesCollection.DeleteOneAsync(i => i.Id == role.Id);
+        await _rolesCollection.DeleteOneAsync(i => i.Id == role.Id, cancellationToken);
 
         return IdentityResult.Success;
     }
@@ -71,9 +73,14 @@ public class AppRoleStore : IRoleStore<AppRole>
     
     public async Task<IdentityResult> UpdateAsync(AppRole role, CancellationToken cancellationToken)
     {
-        await _rolesCollection.ReplaceOneAsync(i => i.Id == role.Id, role);
+        await _rolesCollection.ReplaceOneAsync(i => i.Id == role.Id, role, cancellationToken: cancellationToken);
 
         return IdentityResult.Success;
+    }
+
+    public async Task<List<AppRole>> FindAllAsync(CancellationToken cancellationToken)
+    {
+        return await _rolesCollection.Find(_ => true).ToListAsync(cancellationToken);
     }
 
     public void Dispose()

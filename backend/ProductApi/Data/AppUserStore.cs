@@ -25,7 +25,7 @@ public class AppUserStore : IUserStore<AppUser>
     
     public async Task<IdentityResult> DeleteAsync(AppUser user, CancellationToken cancellationToken)
     {
-        await _usersCollection.DeleteOneAsync(i => i.Id == user.Id);
+        await _usersCollection.DeleteOneAsync(i => i.Id == user.Id, cancellationToken);
 
         return IdentityResult.Success;
     }
@@ -71,7 +71,7 @@ public class AppUserStore : IUserStore<AppUser>
     
     public async Task<IdentityResult> UpdateAsync(AppUser user, CancellationToken cancellationToken)
     {
-        await _usersCollection.ReplaceOneAsync(i => i.Id == user.Id, user);
+        await _usersCollection.ReplaceOneAsync(i => i.Id == user.Id, user, cancellationToken: cancellationToken);
 
         return IdentityResult.Success;
     }

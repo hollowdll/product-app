@@ -1,6 +1,8 @@
 using ProductApi.Models;
 using ProductApi.Services;
 using ProductApi.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +18,14 @@ builder.Services.AddCors(options =>
 // Configure database settings
 builder.Services.Configure<ProductDatabaseSettings>(
     builder.Configuration.GetSection("ProductDatabase"));
-
 builder.Services.AddSingleton<ProductDbContext>();
+
+builder.Services.AddIdentity<AppUser, AppRole>()
+    .AddUserStore<AppUserStore>()
+    .AddRoleStore<AppRoleStore>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<RoleService>();
 builder.Services.AddSingleton<ProductsService>();
 
 builder.Services.AddControllers();
@@ -34,6 +42,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     // development error handler
     app.UseExceptionHandler("/error-dev");
+
+    using (var serviceScope = app.Services.CreateScope())
+    {
+        var services = serviceScope.ServiceProvider;
+        SeedData.CreateInitialRoles(services);
+    }
 }
 else
 {
