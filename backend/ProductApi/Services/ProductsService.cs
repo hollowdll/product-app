@@ -35,6 +35,12 @@ public class ProductsService : IDisposable
         await _productsCollection.InsertOneAsync(newProduct);
 
     /// <summary>
+    /// Adds new documents to products collection in one request.
+    /// </summary>
+    public async Task AddManyProductsAsync(List<Product> products) =>
+        await _productsCollection.InsertManyAsync(products);
+
+    /// <summary>
     /// Edits a document in products collection by replacing it.
     /// </summary>
     public async Task EditProductAsync(string id, Product updatedProduct) =>

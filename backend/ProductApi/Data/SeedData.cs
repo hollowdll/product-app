@@ -47,4 +47,55 @@ public static class SeedData
             await userService.AddManyUsersAsync(users);
         }
     }
+
+    public static async void CreateInitialProducts(ProductsService productsService)
+    {
+        var products = await productsService.GetProductsAsync();
+        if (!products.Any())
+        {
+            var product1 = new Product
+            {
+                Name = "Phone",
+                Manufacturer = "Company A",
+                Price = 250,
+                Published = DateTime.Now
+            };
+            var product2 = new Product
+            {
+                Name = "Laptop",
+                Manufacturer = "Company B",
+                Price = 700,
+                Published = DateTime.Now
+            };
+            var product3 = new Product
+            {
+                Name = "Toilet paper",
+                Manufacturer = "Company C",
+                Price = 99,
+                Published = DateTime.Now
+            };
+            var product4 = new Product
+            {
+                Name = "Keyboard",
+                Manufacturer = "Company D",
+                Price = 50,
+                Published = DateTime.Now
+            };
+            var product5 = new Product
+            {
+                Name = "Chair",
+                Manufacturer = "Company E",
+                Price = 65,
+                Published = DateTime.Now
+            };
+
+            products.Add(product1);
+            products.Add(product2);
+            products.Add(product3);
+            products.Add(product4);
+            products.Add(product5);
+
+            await productsService.AddManyProductsAsync(products);
+        }
+    }
 }

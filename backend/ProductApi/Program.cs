@@ -2,7 +2,6 @@ using ProductApi.Models;
 using ProductApi.Services;
 using ProductApi.Data;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +50,7 @@ if (app.Environment.IsDevelopment())
         SeedData.CreateInitialUsers(
             services.GetRequiredService<RoleService>(),
             services.GetRequiredService<UserService>());
+        SeedData.CreateInitialProducts(services.GetRequiredService<ProductsService>());
     }
 }
 else
