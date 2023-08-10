@@ -13,18 +13,10 @@ public static class SeedData
         {
             var roles = new List<AppRole>();
 
-            var userRole = new AppRole()
-            {
-                Name = "User",
-                NormalizedName = "USER"
-            };
+            var userRole = new AppRole("User");
             roles.Add(userRole);
 
-            var adminRole = new AppRole()
-            {
-                Name = "Admin",
-                NormalizedName = "ADMIN"
-            };
+            var adminRole = new AppRole("Admin");
             roles.Add(adminRole);
 
             await roleService.AddManyRolesAsync(roles);
@@ -41,25 +33,15 @@ public static class SeedData
 
             var testUserRoles = new List<AppRole>();
             testUserRoles.Add(userRole);
-            var testUser = new AppUser()
-            {
-                Username = "TestUser1",
-                NormalizedUsername = "TESTUSER1",
-                Password = "Password1!",
-                Roles = testUserRoles,
-            };
+
+            var testUser = new AppUser("TestUser", "Password10!", testUserRoles);
             users.Add(testUser);
 
             var adminUserRoles = new List<AppRole>();
             adminUserRoles.Add(userRole);
             adminUserRoles.Add(adminRole);
-            var adminUser = new AppUser()
-            {
-                Username = "AdminUser",
-                NormalizedUsername = "ADMINUSER",
-                Password = "Password2!",
-                Roles = adminUserRoles,
-            };
+
+            var adminUser = new AppUser("AdminUser", "Password11!", adminUserRoles);
             users.Add(adminUser);
 
             await userService.AddManyUsersAsync(users);
