@@ -83,6 +83,8 @@ public class AppRoleStore : IQueryableRoleStore<AppRole>
         return await _rolesCollection.Find(_ => true).ToListAsync(cancellationToken);
     }
 
+    
+
     public void Dispose()
     {
     }

@@ -15,5 +15,5 @@ public class AppUser
 
     public string Password { get; set; } = null!;
 
-    public IList<AppRole> Roles { get; } = null!;
+    public IList<AppRole> Roles { get; set; } = null!;
 }

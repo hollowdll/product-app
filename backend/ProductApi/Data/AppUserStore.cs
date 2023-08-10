@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace ProductApi.Data;
 
-public class AppUserStore : IUserStore<AppUser>
+public class AppUserStore : IQueryableUserStore<AppUser>
 {
     private readonly IMongoCollection<AppUser> _usersCollection;
 
@@ -15,6 +15,8 @@ public class AppUserStore : IUserStore<AppUser>
         _usersCollection = context.Database.GetCollection<AppUser>(
             databaseSettings.Value.UsersCollectionName);
     }
+
+    public IQueryable<AppUser> Users => _usersCollection.AsQueryable();
 
     public async Task<IdentityResult> CreateAsync(AppUser user, CancellationToken cancellationToken)
     {

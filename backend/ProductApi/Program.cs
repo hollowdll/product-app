@@ -26,6 +26,7 @@ builder.Services.AddIdentity<AppUser, AppRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<ProductsService>();
 
 builder.Services.AddControllers();
@@ -46,7 +47,10 @@ if (app.Environment.IsDevelopment())
     using (var serviceScope = app.Services.CreateScope())
     {
         var services = serviceScope.ServiceProvider;
-        SeedData.CreateInitialRoles(services);
+        SeedData.CreateInitialRoles(services.GetRequiredService<RoleService>());
+        SeedData.CreateInitialUsers(
+            services.GetRequiredService<RoleService>(),
+            services.GetRequiredService<UserService>());
     }
 }
 else

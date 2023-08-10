@@ -36,6 +36,11 @@ public class RoleService : IDisposable
         await _rolesCollection.InsertManyAsync(roles);
     }
 
+    public async Task<AppRole> GetRoleByNameAsync(string name)
+    {
+        return await _roleManager.FindByNameAsync(name);
+    }
+
     public void Dispose()
     {
     }
