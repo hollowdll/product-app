@@ -10,6 +10,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add JWT authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -23,13 +24,15 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidateLifetime = false,
+        ValidateLifetime = true,
         ValidIssuer = builder.Configuration["JwtDevelopment:Issuer"],
         ValidAudience = builder.Configuration["JwtDevelopment:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["JwtDevelopment:Key"])),
     };
 });
+builder.Services.Configure<AppJwtConfig>(
+    builder.Configuration.GetSection("JwtDevelopment"));
 
 builder.Services.AddCors(options =>
 {
