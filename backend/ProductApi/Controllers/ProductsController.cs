@@ -3,11 +3,13 @@ using ProductApi.Models;
 using ProductApi.Services;
 using ProductApi.Helpers;
 using ProductApi.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProductApi.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
+[Authorize]
 public class ProductsController : ControllerBase
 {
     private readonly ILogger<ProductsController> _logger;

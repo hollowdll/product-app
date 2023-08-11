@@ -10,7 +10,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add JWT authentication
 builder.Services.AddAuthentication(options =>
 {

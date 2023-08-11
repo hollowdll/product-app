@@ -26,9 +26,20 @@ public class UserService : IDisposable
         return _userManager.Users;
     }
 
+    public async Task<AppUser> GetUserByUsernameAsync(string username)
+    {
+        return await _userManager.FindByNameAsync(username);
+    }
+
+    public async Task<AppUser> GetUserByUsernameCaseSensitiveAsync(string username)
+    {
+        return await _usersCollection.Find(i => i.Username == username).FirstOrDefaultAsync();
+    }
+
     public async Task AddUserAsync(AppUser user)
     {
-        await _userManager.CreateAsync(user);
+        // await _userManager.CreateAsync(user);
+        await _usersCollection.InsertOneAsync(user);
     }
 
     public async Task AddManyUsersAsync(List<AppUser> users)
