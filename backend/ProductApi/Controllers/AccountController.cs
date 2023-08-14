@@ -15,15 +15,18 @@ namespace ProductApi.Controllers;
 [Authorize]
 public class AccountController : ControllerBase
 {
+    private readonly IOptions<AppJwtConfig> _appJwtConfig;
     private readonly ILogger<AccountController> _logger;
     private readonly UserService _userService;
     private readonly RoleService _roleService;
 
     public AccountController(
+        IOptions<AppJwtConfig> appJwtConfig,
         ILogger<AccountController> logger,
         UserService userService,
         RoleService roleService)
     {
+        _appJwtConfig = appJwtConfig;
         _logger = logger;
         _userService = userService;
         _roleService = roleService;
@@ -36,7 +39,7 @@ public class AccountController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult> RegisterUser(UserRegisterCredentials userCredentials)
     {
-        if (!userCredentials.Password.Equals(userCredentials.ConfirmPassword))
+        if (!userCredentials.Password.Equals(userCredentials.PasswordConfirm))
         {
             return BadRequest("Passwords don't match");
         }
@@ -44,6 +47,11 @@ public class AccountController : ControllerBase
         if (userCredentials.Username.Length < 1 || userCredentials.Username.Length > 30)
         {
             return BadRequest("Username must be 1-30 characters long");
+        }
+
+        if (userCredentials.Password.Length < 6)
+        {
+            return BadRequest("Password must be at least 6 characters long");
         }
 
         // Case sensitive check if username already exists
@@ -75,7 +83,7 @@ public class AccountController : ControllerBase
     [HttpPost]
     [Route("Login")]
     [AllowAnonymous]
-    public async Task<ActionResult> LoginUser(IOptions<AppJwtConfig> appJwtConfig, UserLoginCredentials userCredentials)
+    public async Task<ActionResult> LoginUser(UserLoginCredentials userCredentials)
     {
         var user = await _userService.GetUserByUsernameCaseSensitiveAsync(userCredentials.Username);
         if (user == null)
@@ -84,6 +92,7 @@ public class AccountController : ControllerBase
         }
 
         // No password hashing currently so this is insecure!
+        // Also this doesn't guarantee protection for timing attacks.
         if (!userCredentials.Password.Equals(user.Password))
         {
             return BadRequest("Password is incorrect");
@@ -96,8 +105,8 @@ public class AccountController : ControllerBase
             new Claim(ClaimTypes.Role, "User")
         });
 
-        var tokenExpirationsMinutes = 1;
-        var jwtToken = JwtTokenGenerator.GenerateToken(appJwtConfig.Value, claims, tokenExpirationsMinutes);
+        var tokenExpirationMinutes = 1;
+        var jwtToken = JwtTokenGenerator.GenerateToken(_appJwtConfig.Value, claims, tokenExpirationMinutes);
 
         return Ok(new { token = jwtToken });
     }

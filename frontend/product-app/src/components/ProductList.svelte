@@ -4,6 +4,7 @@
 	import { onMount } from "svelte";
 
     let products: Array<Product> = [];
+    let errMessage = "";
 
     onMount(async () => {
         fetch(`${PRODUCT_API_URL}/products`)
@@ -15,12 +16,17 @@
                 return response.json();
             })
             .then(data => products = data)
-            .catch(err => console.error(err));
+            .catch(err => {
+                errMessage = "Failed to load products";
+                console.error(err)
+            });
     });
 </script>
 
 <div class="products">
-    {#if products.length === 0}
+    {#if errMessage.length > 0}
+        <p>{errMessage}</p>
+    {:else if products.length === 0}
         <p>Loading...</p>
     {:else}
         <table>
