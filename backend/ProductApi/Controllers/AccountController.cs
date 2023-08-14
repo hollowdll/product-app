@@ -4,6 +4,9 @@ using ProductApi.Services;
 using ProductApi.Helpers;
 using ProductApi.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using ProductApi.Utility;
+using Microsoft.Extensions.Options;
 
 namespace ProductApi.Controllers;
 
@@ -66,13 +69,36 @@ public class AccountController : ControllerBase
         return Ok();
     }
 
-    /*
-    // Login a user and validate JWT token.
+    
+    // Logins an existing user.
+    // Validates input data and generates a new JWT token.
     [HttpPost]
+    [Route("Login")]
     [AllowAnonymous]
-    public ActionResult LoginUser()
+    public async Task<ActionResult> LoginUser(IOptions<AppJwtConfig> appJwtConfig, UserLoginCredentials userCredentials)
     {
-        return NotFound();
+        var user = await _userService.GetUserByUsernameCaseSensitiveAsync(userCredentials.Username);
+        if (user == null)
+        {
+            return NotFound("No user with this username found");
+        }
+
+        // No password hashing currently so this is insecure!
+        if (!userCredentials.Password.Equals(user.Password))
+        {
+            return BadRequest("Password is incorrect");
+        }
+
+        var claims = new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, "User")
+        });
+
+        var tokenExpirationsMinutes = 1;
+        var jwtToken = JwtTokenGenerator.GenerateToken(appJwtConfig.Value, claims, tokenExpirationsMinutes);
+
+        return Ok(new { token = jwtToken });
     }
-    */
 }
