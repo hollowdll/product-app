@@ -7,19 +7,24 @@
     let errMessage = "";
 
     onMount(async () => {
-        fetch(`${PRODUCT_API_URL}/products`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch products: " + response.statusText);
-                }
+        const jwtAccessToken = localStorage.getItem("jwtAccessToken");
 
-                return response.json();
-            })
-            .then(data => products = data)
-            .catch(err => {
-                errMessage = "Failed to load products";
-                console.error(err)
-            });
+        fetch(`${PRODUCT_API_URL}/products`, {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${jwtAccessToken ?? ""}` }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch products: " + response.statusText);
+            }
+
+            return response.json();
+        })
+        .then(data => products = data)
+        .catch(err => {
+            errMessage = "Failed to load products";
+            console.error(err)
+        });
     });
 </script>
 

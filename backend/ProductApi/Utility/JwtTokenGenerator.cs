@@ -20,6 +20,7 @@ public static class JwtTokenGenerator
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claimsIdentity,
+            IssuedAt = DateTime.UtcNow,
             Expires = DateTime.UtcNow.AddMinutes(expirationMinutes),
             Issuer = appJwtConfig.Issuer,
             Audience = appJwtConfig.Audience,

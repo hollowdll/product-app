@@ -12,7 +12,6 @@ namespace ProductApi.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-[Authorize]
 public class AccountController : ControllerBase
 {
     private readonly IOptions<AppJwtConfig> _appJwtConfig;
@@ -36,7 +35,6 @@ public class AccountController : ControllerBase
     // Validates user input.
     [HttpPost]
     [Route("Register")]
-    [AllowAnonymous]
     public async Task<ActionResult> RegisterUser(UserRegisterCredentials userCredentials)
     {
         if (!userCredentials.Password.Equals(userCredentials.PasswordConfirm))
@@ -82,7 +80,6 @@ public class AccountController : ControllerBase
     // Validates input data and generates a new JWT token.
     [HttpPost]
     [Route("Login")]
-    [AllowAnonymous]
     public async Task<ActionResult> LoginUser(UserLoginCredentials userCredentials)
     {
         var user = await _userService.GetUserByUsernameCaseSensitiveAsync(userCredentials.Username);

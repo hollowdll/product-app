@@ -10,29 +10,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add JWT authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateIssuerSigningKey = true,
-        ValidateLifetime = true,
-        ValidIssuer = builder.Configuration["JwtDevelopment:Issuer"],
-        ValidAudience = builder.Configuration["JwtDevelopment:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JwtDevelopment:Key"])),
-    };
-});
-builder.Services.Configure<AppJwtConfig>(
-    builder.Configuration.GetSection("JwtDevelopment"));
-
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy => {
@@ -47,7 +24,11 @@ builder.Services.Configure<ProductDatabaseSettings>(
     builder.Configuration.GetSection("ProductDatabase"));
 builder.Services.AddSingleton<ProductDbContext>();
 
-builder.Services.AddIdentity<AppUser, AppRole>()
+builder.Services.AddIdentityCore<AppUser>(options => 
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+    .AddRoles<AppRole>()
     .AddUserStore<AppUserStore>()
     .AddRoleStore<AppRoleStore>()
     .AddDefaultTokenProviders();
@@ -55,6 +36,26 @@ builder.Services.AddIdentity<AppUser, AppRole>()
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<ProductsService>();
+
+// Add JWT authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["JwtDevelopment:Issuer"],
+        ValidAudience = builder.Configuration["JwtDevelopment:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["JwtDevelopment:Key"])),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+builder.Services.Configure<AppJwtConfig>(
+    builder.Configuration.GetSection("JwtDevelopment"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
