@@ -19,4 +19,30 @@ public static class DtoExtensions
             Published = product.Published
         };
     }
+
+    /// <summary>
+    /// Converts <see cref="AppUser" /> class to <see cref="AppUserDto" /> class.
+    /// </summary>
+    public static AppUserDto ToDto(this AppUser appUser)
+    {
+        return new AppUserDto
+        {
+            Id = appUser.Id,
+            Username = appUser.Username,
+            Roles = appUser.Roles
+                .Select(i => i.ToDto())
+                .ToList()
+        };
+    }
+
+    /// <summary>
+    /// Converts <see cref="AppRole" /> class to <see cref="AppRoleDto" /> class.
+    /// </summary>
+    public static AppRoleDto ToDto(this AppRole appRole)
+    {
+        return new AppRoleDto
+        {
+            Name = appRole.Name
+        };
+    }
 }

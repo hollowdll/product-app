@@ -15,7 +15,7 @@
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to fetch products: " + response.statusText);
+                throw new Error("Failed to fetch products");
             }
 
             return response.json();

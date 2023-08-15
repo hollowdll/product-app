@@ -26,6 +26,11 @@ public class UserService : IDisposable
         return _userManager.Users;
     }
 
+    public async Task<AppUser> GetUserByIdAsync(string userId)
+    {
+        return await _userManager.FindByIdAsync(userId);
+    }
+
     public async Task<AppUser> GetUserByUsernameAsync(string username)
     {
         return await _userManager.FindByNameAsync(username);

@@ -107,4 +107,19 @@ public class AccountController : ControllerBase
 
         return Ok(new { token = jwtToken });
     }
+
+    [HttpGet]
+    [Route("Currentuser")]
+    public async Task<ActionResult<AppUserDto>> GetCurrentUserData()
+    {
+        var currentUser = HttpContext.User;
+        var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId != null)
+        {
+            var user = await _userService.GetUserByIdAsync(userId);
+            return user.ToDto();
+        }
+
+        return NotFound();
+    }
 }

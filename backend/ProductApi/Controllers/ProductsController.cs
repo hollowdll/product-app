@@ -4,6 +4,7 @@ using ProductApi.Services;
 using ProductApi.Helpers;
 using ProductApi.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 
 namespace ProductApi.Controllers;
 
