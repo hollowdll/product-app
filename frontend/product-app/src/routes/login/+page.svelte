@@ -23,7 +23,7 @@
                     .then(data => {
                         // Use local storage for simple use. Store access token more securely in production
                         localStorage.setItem("jwtAccessToken", data.token);
-                        goto("/products");
+                        goto("/");
                     })
             } else {
                 response

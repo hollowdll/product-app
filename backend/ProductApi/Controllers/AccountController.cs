@@ -120,6 +120,6 @@ public class AccountController : ControllerBase
             return user.ToDto();
         }
 
-        return NotFound();
+        return Unauthorized();
     }
 }
