@@ -7,11 +7,10 @@
 	let loading = true;
 
 	onMount(async () => {
-		await fetchUserData();
-		loading = false;
+		fetchUserData();
 	})
 
-	let fetchUserData = async () => {
+	let fetchUserData = () => {
 		const jwtAccessToken = localStorage.getItem("jwtAccessToken");
 
         fetch(`${PRODUCT_API_URL}/account/currentuser`, {
@@ -25,10 +24,8 @@
         })
         .then(data => userData = data)
         .catch(err => console.error(err));
-	}
 
-	let logOut = () => {
-		localStorage.removeItem("jwtAccessToken");
+		loading = false;
 	}
 </script>
 
@@ -43,12 +40,14 @@
 	{#if loading == false}
 		{#if userData != null}
 			<p>Logged in as user <strong>{userData.username}</strong></p>
+
+			<a href="/logout">Sign out</a>
 		{:else}
 			<p>You are not logged in</p>
-		{/if}
 
-		<a href="/login">Login</a>
-		<a href="/register">Register</a>
+			<a href="/login">Login</a>
+			<a href="/register">Register</a>
+		{/if}
 	{/if}
 
 </section>
