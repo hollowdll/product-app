@@ -102,7 +102,7 @@ public class AccountController : ControllerBase
             new Claim(ClaimTypes.Role, "User")
         });
 
-        var tokenExpirationMinutes = 1;
+        var tokenExpirationMinutes = 5;
         var jwtToken = JwtTokenGenerator.GenerateToken(_appJwtConfig.Value, claims, tokenExpirationMinutes);
 
         return Ok(new { token = jwtToken });

@@ -7,6 +7,10 @@
     let errMessage = "";
 
     onMount(async () => {
+        fetchProducts();
+    });
+
+    const fetchProducts = () => {
         const jwtAccessToken = localStorage.getItem("jwtAccessToken");
 
         fetch(`${PRODUCT_API_URL}/products`, {
@@ -15,17 +19,19 @@
         })
         .then(response => {
             if (!response.ok) {
+                if (response.status == 401) {
+                    errMessage = "Log in to view products";
+                } else {
+                    errMessage = "Failed to load products";
+                }
                 throw new Error("Failed to fetch products");
             }
 
             return response.json();
         })
         .then(data => products = data)
-        .catch(err => {
-            errMessage = "Failed to load products";
-            console.error(err)
-        });
-    });
+        .catch(err => console.error(err));
+    }
 </script>
 
 <div class="products">
@@ -51,7 +57,7 @@
                         <td>{product.name}</td>
                         <td>{product.manufacturer}</td>
                         <td>{product.price}</td>
-                        <td>{product.published}</td>
+                        <td>{new Date(Date.parse(product.published)).toISOString()}</td>
                     </tr>
                 {/each}
             </tbody>
