@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using ProductApi.Utility;
 using Microsoft.Extensions.Options;
+using BCrypt.Net;
 
 namespace ProductApi.Controllers;
 
@@ -37,14 +38,14 @@ public class AccountController : ControllerBase
     [Route("Register")]
     public async Task<ActionResult> RegisterUser(UserRegisterCredentials userCredentials)
     {
-        if (!userCredentials.Password.Equals(userCredentials.PasswordConfirm))
-        {
-            return BadRequest("Passwords don't match");
-        }
-
         if (userCredentials.Username.Length < 1 || userCredentials.Username.Length > 30)
         {
             return BadRequest("Username must be 1-30 characters long");
+        }
+
+        if (!userCredentials.Password.Equals(userCredentials.PasswordConfirm))
+        {
+            return BadRequest("Passwords don't match");
         }
 
         if (userCredentials.Password.Length < 6)
@@ -66,7 +67,11 @@ public class AccountController : ControllerBase
         var userRoles = new List<AppRole>();
         userRoles.Add(userRole);
 
-        var newUser = new AppUser(userCredentials.Username, userCredentials.Password, userRoles);
+        int rounds = 12;
+        string hashedPassword = BCrypt.Net.BCrypt
+            .EnhancedHashPassword(userCredentials.Password, HashType.SHA384, rounds);
+
+        var newUser = new AppUser(userCredentials.Username, hashedPassword, userRoles);
         await _userService.AddUserAsync(newUser);
 
         _logger.LogInformation($"Registered and created a new user with username '{newUser.Username}'");
@@ -88,9 +93,7 @@ public class AccountController : ControllerBase
             return NotFound("No user with this username found");
         }
 
-        // No password hashing currently so this is insecure!
-        // Also this doesn't guarantee protection for timing attacks.
-        if (!userCredentials.Password.Equals(user.Password))
+        if (!BCrypt.Net.BCrypt.EnhancedVerify(userCredentials.Password, user.Password))
         {
             return BadRequest("Password is incorrect");
         }

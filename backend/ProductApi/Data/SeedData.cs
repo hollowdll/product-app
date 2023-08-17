@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using ProductApi.Models;
 using Microsoft.AspNetCore.Identity;
 using ProductApi.Services;
+using BCrypt.Net;
 
 namespace ProductApi.Data;
 
@@ -30,18 +31,23 @@ public static class SeedData
             var users = new List<AppUser>();
             var userRole = await roleService.GetRoleByNameAsync("User");
             var adminRole = await roleService.GetRoleByNameAsync("Admin");
+            int rounds = 12;
 
             var testUserRoles = new List<AppRole>();
             testUserRoles.Add(userRole);
-
-            var testUser = new AppUser("TestUser", "Password10!", testUserRoles);
+            
+            string hashedPassword1 = BCrypt.Net.BCrypt
+                .EnhancedHashPassword("Password1!", HashType.SHA384, rounds);
+            var testUser = new AppUser("TestUser", hashedPassword1, testUserRoles);
             users.Add(testUser);
 
             var adminUserRoles = new List<AppRole>();
             adminUserRoles.Add(userRole);
             adminUserRoles.Add(adminRole);
 
-            var adminUser = new AppUser("AdminUser", "Password11!", adminUserRoles);
+            string hashedPassword2 = BCrypt.Net.BCrypt
+                .EnhancedHashPassword("Password2!", HashType.SHA384, rounds);
+            var adminUser = new AppUser("AdminUser", hashedPassword2, adminUserRoles);
             users.Add(adminUser);
 
             await userService.AddManyUsersAsync(users);
