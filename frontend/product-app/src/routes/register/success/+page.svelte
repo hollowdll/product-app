@@ -6,5 +6,5 @@
 <section>
     <h1>Successfully created a new user account</h1>
 
-    <p>Login <a href="/login">here</a></p>
+    <a href="/login">Login here</a>
 </section>

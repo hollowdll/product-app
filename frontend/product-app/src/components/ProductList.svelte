@@ -24,13 +24,16 @@
                 } else {
                     errMessage = "Failed to load products";
                 }
-                throw new Error("Failed to fetch products");
+                return console.error(errMessage);
             }
 
             return response.json();
         })
         .then(data => products = data)
-        .catch(err => console.error(err));
+        .catch(err => {
+            errMessage = "Failed to load products";
+            console.error(err)
+        });
     }
 </script>
 

@@ -44,9 +44,16 @@
 			<a href="/logout">Sign out</a>
 		{:else}
 			<p>You are not logged in</p>
+			<p>Log in with one of the test users or create a new one</p>
+			<p>
+				TestUser / Password1! <br>
+				AdminUser / Password2!
+			</p>
 
-			<a href="/login">Login</a>
-			<a href="/register">Register</a>
+			<div>
+				<a href="/login">Login</a>
+				<a href="/register">Register</a>
+			</div>
 		{/if}
 	{/if}
 

@@ -9,6 +9,7 @@
         passwordConfirm: ""
     }
     let errMessage = "";
+    let errMessage2 = "";
 
     // Submits register form to the backend
     let submitRegister = () => {
@@ -29,7 +30,10 @@
                     });
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            errMessage2 = "Failed to register";
+            console.error(err)
+        });
     }
 </script>
 
@@ -41,10 +45,13 @@
 <section>
 	<h1>Create a new user account</h1>
 
+    {#if errMessage2.length > 0}
+        <p>{errMessage2}</p>
+    {/if}
+    {#if errMessage.length > 0}
+        <p>{errMessage}</p>
+    {/if}
     <div class="register-form">
-        {#if errMessage.length > 0}
-            <p>{errMessage}</p>
-        {/if}
         <div>
             <input
                 id="username"

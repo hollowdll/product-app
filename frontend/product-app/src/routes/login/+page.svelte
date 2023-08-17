@@ -8,6 +8,7 @@
         password: "",
     }
     let errMessage = "";
+    let errMessage2 = "";
 
     // Submits login form to the backend
     let submitLogin = () => {
@@ -34,7 +35,10 @@
                     });
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            errMessage2 = "Failed to login";
+            console.error(err)
+        });
     }
 </script>
 
@@ -46,6 +50,9 @@
 <section>
 	<h1>Login</h1>
 
+    {#if errMessage2.length > 0}
+        <p>{errMessage2}</p>
+    {/if}
     {#if errMessage.length > 0}
         <p>{errMessage}</p>
     {/if}
