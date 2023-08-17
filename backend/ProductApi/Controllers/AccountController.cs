@@ -98,6 +98,7 @@ public class AccountController : ControllerBase
             return BadRequest("Password is incorrect");
         }
 
+        var isAdmin = user.Roles.FirstOrDefault(i => i.Name.Equals("Admin"));
         var claims = new ClaimsIdentity(new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -105,8 +106,22 @@ public class AccountController : ControllerBase
             new Claim(ClaimTypes.Role, "User")
         });
 
+        if (isAdmin != null)
+        {
+            claims.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+        }
+
         var tokenExpirationMinutes = 5;
         var jwtToken = JwtTokenGenerator.GenerateToken(_appJwtConfig.Value, claims, tokenExpirationMinutes);
+
+        if (isAdmin != null)
+        {
+            _logger.LogInformation($"Logged in admin user with username '{user.Username}'");
+        }
+        else
+        {
+            _logger.LogInformation($"Logged in normal user with username '{user.Username}'");
+        }
 
         return Ok(new { token = jwtToken });
     }
