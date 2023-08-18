@@ -35,7 +35,7 @@
 </svelte:head>
 
 <section>
-	<h1>Welcome to Product app</h1>
+	<h1 class="text-3xl font-bold">Welcome to Product app</h1>
 
 	{#if loading == false}
 		{#if userData != null}
