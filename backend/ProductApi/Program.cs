@@ -47,15 +47,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
-        ValidIssuer = builder.Configuration["JwtDevelopment:Issuer"],
-        ValidAudience = builder.Configuration["JwtDevelopment:Audience"],
+        ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
+        ValidAudience = builder.Configuration["JwtConfig:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JwtDevelopment:Key"])),
+            Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:Key"])),
         ClockSkew = TimeSpan.Zero
     };
 });
 builder.Services.Configure<AppJwtConfig>(
-    builder.Configuration.GetSection("JwtDevelopment"));
+    builder.Configuration.GetSection("JwtConfig"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -71,7 +71,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     // development error handler
     app.UseExceptionHandler("/error-dev");
+}
+else
+{
+    // production error handler
+    app.UseExceptionHandler("/error");
 
+    // Create initial data to database it it is empty
     using (var serviceScope = app.Services.CreateScope())
     {
         var services = serviceScope.ServiceProvider;
@@ -81,11 +87,6 @@ if (app.Environment.IsDevelopment())
             services.GetRequiredService<UserService>());
         SeedData.CreateInitialProducts(services.GetRequiredService<ProductsService>());
     }
-}
-else
-{
-    // production error handler
-    app.UseExceptionHandler("/error");
 }
 
 app.UseHttpsRedirection();

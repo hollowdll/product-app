@@ -43,7 +43,6 @@ public class UserService : IDisposable
 
     public async Task AddUserAsync(AppUser user)
     {
-        // await _userManager.CreateAsync(user);
         await _usersCollection.InsertOneAsync(user);
     }
 
