@@ -4,6 +4,8 @@ Product CRUD application with JWT authentication and custom user login/register.
 
 The backend has a REST API with automatically generated interactive OpenAPI 3.0 Swagger documentation. This documentation is generated only in development mode and can be accessed from endpoint `/swagger`. Most API calls require authentication so a JWT access token has to be included in request headers as `Authorization: Bearer <your_jwt_token>`. A JWT token can be obtained on user login.
 
+![API](./docs/images/api.JPG?raw=true)
+
 # Tech stack
 
 - Frontend is built with Svelte and SvelteKit
