@@ -76,17 +76,17 @@ else
 {
     // production error handler
     app.UseExceptionHandler("/error");
+}
 
-    // Create initial data to database it it is empty
-    using (var serviceScope = app.Services.CreateScope())
-    {
-        var services = serviceScope.ServiceProvider;
-        SeedData.CreateInitialRoles(services.GetRequiredService<RoleService>());
-        SeedData.CreateInitialUsers(
-            services.GetRequiredService<RoleService>(),
-            services.GetRequiredService<UserService>());
-        SeedData.CreateInitialProducts(services.GetRequiredService<ProductsService>());
-    }
+// Create initial data to database it it is empty
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+    SeedData.CreateInitialRoles(services.GetRequiredService<RoleService>());
+    SeedData.CreateInitialUsers(
+        services.GetRequiredService<RoleService>(),
+        services.GetRequiredService<UserService>());
+    SeedData.CreateInitialProducts(services.GetRequiredService<ProductsService>());
 }
 
 app.UseHttpsRedirection();
