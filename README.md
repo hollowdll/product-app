@@ -28,3 +28,19 @@ Username | Role | Password
 -------- | ---- | --------
 TestUser | User | Password1!
 AdminUser | Admin | Password2!
+
+# About database
+
+This application uses MongoDB as database. MongoDB is a NoSQL document database where entities (documents) are stored to collections.
+
+This application has 3 collections:
+
+- `users` has all app users
+- `roles` has all app roles
+- `products` has all products
+
+In the application's schema, user documents have embedded role documents. This way a specific user's roles can be checked easily without additional database queries.
+
+To change your MongoDB connection string, modify backend application's `appsettings.json`. The default for this application is `mongodb://localhost:27017` and default database name is `product_db`. Make sure to create the database and collections before running as there is no script to create them!
+
+
