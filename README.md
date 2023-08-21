@@ -44,3 +44,33 @@ This application has 3 collections:
 In the application's schema, user documents have embedded role documents. This way a specific user's roles can be checked easily without additional database queries.
 
 To change your MongoDB connection string, modify backend application's `appsettings.json`. The default database name is `product_db`. Make sure to create the database and collections before running!
+
+# How to run with Docker
+
+To run with Docker, make sure you have Docker installed.
+
+You also need MongoDB image. This project uses MongoDB community server.
+
+```bash
+docker pull mongodb/mongodb-community-server
+```
+
+Run the backend, frontend and database in Docker containers as a single application with Docker Compose
+
+```bash
+cd product-app
+```
+
+```bash
+docker compose up -d
+```
+
+The backend application will be available at `http://localhost:8080` and frontend at `http://localhost:3000`.
+
+The application will use a volume to persist database data. MongoDB container's directory `data/db` is mounted to this volume.
+
+To stop the app and remove containers:
+
+```bash
+docker compose down
+```
