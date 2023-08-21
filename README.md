@@ -43,6 +43,4 @@ This application has 3 collections:
 
 In the application's schema, user documents have embedded role documents. This way a specific user's roles can be checked easily without additional database queries.
 
-To change your MongoDB connection string, modify backend application's `appsettings.json`. The default for this application is `mongodb://localhost:27017` and default database name is `product_db`. Make sure to create the database and collections before running as there is no script to create them!
-
-
+To change your MongoDB connection string, modify backend application's `appsettings.json`. The default database name is `product_db`. Make sure to create the database and collections before running!
