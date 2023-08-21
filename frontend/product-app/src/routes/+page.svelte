@@ -4,7 +4,7 @@
 	import { onMount } from "svelte";
 
 	let userData: UserData | null = null;
-	let loading = true;
+	let isLoggedIn = false;
 
 	onMount(async () => {
 		fetchUserData();
@@ -22,10 +22,11 @@
 				return response.json();
 			}
         })
-        .then(data => userData = data)
+        .then(data => {
+			userData = data
+			isLoggedIn = true
+		})
         .catch(err => console.error(err));
-
-		loading = false;
 	}
 </script>
 
@@ -37,24 +38,22 @@
 <section>
 	<h1>Welcome to Product app</h1>
 
-	{#if loading == false}
-		{#if userData != null}
-			<p>Logged in as user <strong>{userData.username}</strong></p>
+	{#if userData != null && isLoggedIn == true}
+		<p>Logged in as user <strong>{userData.username}</strong></p>
 
-			<a href="/logout">Sign out</a>
-		{:else}
-			<p>You are not logged in</p>
-			<p>Log in with one of the test users or create a new one</p>
-			<p>
-				TestUser / Password1! <br>
-				AdminUser / Password2!
-			</p>
+		<a href="/logout">Sign out</a>
+	{:else}
+		<p>You are not logged in</p>
+		<p>Log in with one of the test users or create a new one</p>
+		<p>
+			TestUser / Password1! <br>
+			AdminUser / Password2!
+		</p>
 
-			<div>
-				<a href="/login">Login</a>
-				<a href="/register">Register</a>
-			</div>
-		{/if}
+		<div>
+			<a href="/login">Login</a>
+			<a href="/register">Register</a>
+		</div>
 	{/if}
 
 </section>
